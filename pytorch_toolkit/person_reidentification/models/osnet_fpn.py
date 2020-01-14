@@ -3,6 +3,8 @@
 
  Copyright (c) 2018 Kaiyang Zhou
 
+ Copyright (c) 2019 mangye16
+
  Copyright (c) 2019 Intel Corporation
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,6 +44,46 @@ pretrained_urls_fpn = {
 }
 
 
+class GeneralizedMeanPooling(nn.Module):
+    r"""Applies a 2D power-average adaptive pooling over an input signal composed of several input planes.
+    The function computed is: :math:`f(X) = pow(sum(pow(X, p)), 1/p)`
+        - At p = infinity, one gets Max Pooling
+        - At p = 1, one gets Average Pooling
+    The output is of size H x W, for any input size.
+    The number of output features is equal to the number of input planes.
+    Args:
+        output_size: the target output size of the image of the form H x W.
+                     Can be a tuple (H, W) or a single H for a square image H x H
+                     H and W can be either a ``int``, or ``None`` which means the size will
+                     be the same as that of the input.
+    """
+
+    def __init__(self, norm, output_size=1, eps=1e-6):
+        super(GeneralizedMeanPooling, self).__init__()
+        assert norm > 0
+        self.p = float(norm)
+        self.output_size = output_size
+        self.eps = eps
+
+    def forward(self, x):
+        x = x.clamp(min=self.eps).pow(self.p)
+        return torch.nn.functional.adaptive_avg_pool2d(x, self.output_size).pow(1. / self.p)
+
+    def __repr__(self):
+        return self.__class__.__name__ + '(' \
+            + str(self.p) + ', ' \
+            + 'output_size=' + str(self.output_size) + ')'
+
+
+class GeneralizedMeanPoolingP(GeneralizedMeanPooling):
+    """ Same, but norm is trainable
+    """
+
+    def __init__(self, norm=3, output_size=1, eps=1e-6):
+        super(GeneralizedMeanPoolingP, self).__init__(norm, output_size, eps)
+        self.p = nn.Parameter(torch.ones(1) * norm)
+
+
 class OSNetFPN(OSNet):
     """Omni-Scale Network.
 
@@ -56,7 +98,7 @@ class OSNetFPN(OSNet):
                  dropout_prob=0,
                  fpn=True,
                  fpn_dim=256,
-                 gap_as_conv=False,
+                 pooling_type='avg',
                  input_size=(256, 128),
                  IN_first=False,
                  **kwargs):
@@ -71,13 +113,17 @@ class OSNetFPN(OSNet):
             self.conv1 = ConvLayer(3, channels[0], 7, stride=2, padding=3, IN=self.use_IN_first)
 
         kernel_size = (input_size[0] // self.feature_scales[-1], input_size[1] // self.feature_scales[-1])
-        if gap_as_conv:
+        if 'conv' in pooling_type:
             if fpn:
                 self.global_avgpool = nn.Conv2d(fpn_dim, fpn_dim, kernel_size, groups=fpn_dim)
             else:
                 self.global_avgpool = nn.Conv2d(channels[3], channels[3], kernel_size, groups=channels[3])
+        elif 'avg' in pooling_type:
+            self.global_avgpool = nn.AdaptiveAvgPool2d(1)
+        elif 'gmp' in pooling_type:
+            self.global_avgpool = GeneralizedMeanPoolingP()
         else:
-            self.global_avgpool = nn.AvgPool2d(kernel_size)
+            raise ValueError('Incorrect pooling type')
 
         self.fpn = FPN(channels, self.feature_scales, fpn_dim, fpn_dim) if fpn else None
 

@@ -48,7 +48,7 @@ def main():
             use_gpu=True,
             feature_dim=cfg.model.feature_dim,
             fpn_dim=cfg.model.fpn_dim,
-            gap_as_conv=cfg.model.gap_as_conv,
+            pooling_type=cfg.model.pooling_type,
             IN_first=cfg.model.IN_first
         )
 

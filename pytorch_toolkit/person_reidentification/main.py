@@ -105,7 +105,7 @@ def main():
         feature_dim=cfg.model.feature_dim,
         fpn=cfg.model.fpn,
         fpn_dim=cfg.model.fpn_dim,
-        gap_as_conv=cfg.model.gap_as_conv,
+        pooling_type=cfg.model.pooling_type,
         input_size=(cfg.data.height, cfg.data.width),
         IN_first=cfg.model.IN_first
     )
