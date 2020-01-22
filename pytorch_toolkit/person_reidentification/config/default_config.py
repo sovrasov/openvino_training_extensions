@@ -32,6 +32,7 @@ def get_default_config():
     cfg.model.fpn_dim = 256
     cfg.model.pooling_type = 'avg'
     cfg.model.IN_first = False
+    cfg.model.attention = False
     cfg.model.openvino = CN()
     cfg.model.openvino.name = ''  # Path to *.xml
     cfg.model.openvino.cpu_extension = ''

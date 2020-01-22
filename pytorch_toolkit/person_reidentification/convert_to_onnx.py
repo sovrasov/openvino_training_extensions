@@ -49,7 +49,8 @@ def main():
             feature_dim=cfg.model.feature_dim,
             fpn_dim=cfg.model.fpn_dim,
             pooling_type=cfg.model.pooling_type,
-            IN_first=cfg.model.IN_first
+            IN_first=cfg.model.IN_first,
+            attention=cfg.model.attention
         )
 
     load_pretrained_weights(model, cfg.model.load_weights)

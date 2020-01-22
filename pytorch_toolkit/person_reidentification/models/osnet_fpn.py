@@ -5,6 +5,8 @@
 
  Copyright (c) 2019 mangye16
 
+ Copyright (c) 2018 Jun Fu
+
  Copyright (c) 2019 Intel Corporation
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +31,7 @@ import torch
 from torch import nn
 
 from torchreid.models.osnet import OSNet, OSBlock, ConvLayer, pretrained_urls
+from torchreid.models.senet import SEModule
 
 from .modules.fpn import FPN
 
@@ -42,6 +45,72 @@ pretrained_urls_fpn = {
     'fpn_osnet_x0_25': pretrained_urls['osnet_x0_25'],
     'fpn_osnet_ibn_x1_0': pretrained_urls['osnet_ibn_x1_0']
 }
+
+
+class PAMModule(nn.Module):
+    """ Position attention module"""
+
+    def __init__(self, in_dim):
+        super(PAMModule, self).__init__()
+        self.channel_in = in_dim
+
+        self.query_conv = nn.Conv2d(
+            in_channels=in_dim,
+            out_channels=in_dim // 8,
+            kernel_size=1
+        )
+        self.key_conv = nn.Conv2d(
+            in_channels=in_dim,
+            out_channels=in_dim // 8,
+            kernel_size=1
+        )
+        self.gamma = nn.Parameter(torch.zeros(1))
+
+        self.softmax = nn.Softmax(dim=-1)
+        self.bn = nn.BatchNorm2d(in_dim)
+
+    def forward(self, x):
+        """
+            inputs :
+                x : input feature maps( B X C X H X W)
+            returns :
+                out : attention value + input feature
+                attention: B X (HxW) X (HxW)
+        """
+        m_batchsize, C, height, width = x.size()
+        proj_query = self\
+            .query_conv(x)\
+            .view(m_batchsize, -1, width * height)\
+            .permute(0, 2, 1)
+        proj_key = self\
+            .key_conv(x)\
+            .view(m_batchsize, -1, width * height)
+        # proj_query = proj_query * (1 - 1 / (C/8))
+        energy = torch.bmm(proj_query, proj_key)
+        attention = self.softmax(energy)
+        x_view = x.view(m_batchsize, -1, width * height)
+
+        out = torch.bmm(x_view, attention.permute(0, 2, 1))
+        attention_mask = out.view(m_batchsize, C, height, width)
+
+        out = self.gamma * attention_mask
+        out = self.bn(out)
+        out = out + x
+        return out
+
+
+class AttentionModule(nn.Module):
+
+    def __init__(self, in_dim):
+        super().__init__()
+        self.in_channel = in_dim
+        self.pam = PAMModule(in_dim)
+        self.se = SEModule(in_dim, reduction=16)
+
+    def forward(self, x):
+        out = self.pam(x)
+        out = self.se(out)
+        return out
 
 
 class GeneralizedMeanPooling(nn.Module):
@@ -95,6 +164,7 @@ class OSNetFPN(OSNet):
                  feature_dim=256,
                  loss='softmax',
                  instance_norm=False,
+                 attention=False,
                  dropout_prob=0,
                  fpn=True,
                  fpn_dim=256,
@@ -111,6 +181,10 @@ class OSNetFPN(OSNet):
         if IN_first:
             self.in_first = nn.InstanceNorm2d(3, affine=True)
             self.conv1 = ConvLayer(3, channels[0], 7, stride=2, padding=3, IN=self.use_IN_first)
+        self.attention = attention
+        if self.attention:
+            self.at_1 = AttentionModule(channels[1])
+            self.at_2 = AttentionModule(channels[2])
 
         kernel_size = (input_size[0] // self.feature_scales[-1], input_size[1] // self.feature_scales[-1])
         if 'conv' in pooling_type:
@@ -172,8 +246,12 @@ class OSNetFPN(OSNet):
         x1 = self.maxpool(x)
         out.append(x1)
         x2 = self.conv2(x1)
+        if self.attention:
+            x2 = self.at_1(x2)
         out.append(x2)
         x3 = self.conv3(x2)
+        if self.attention:
+            x3 = self.at_2(x3)
         out.append(x3)
         x4 = self.conv4(x3)
         x5 = self.conv5(x4)

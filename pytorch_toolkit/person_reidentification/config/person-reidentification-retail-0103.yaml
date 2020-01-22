@@ -5,6 +5,7 @@ model:
   feature_dim: 256
   IN_first: True
   pooling_type: 'gmp'
+  attention: True
   fpn: False
 
 data:
