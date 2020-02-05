@@ -97,3 +97,24 @@ class GlobalMe(ImageDataset):
                 pid = pid2label[pid]
             data.append((img_path, pid, camid))
         return data
+
+
+class GlobalMeV2(GlobalMe):
+    dataset_dir = 'globalmev2-reid'
+
+    def __init__(self, root='', market1501_500k=False, **kwargs):
+        super(GlobalMeV2, self).__init__(root, market1501_500k, **kwargs)
+
+
+class GlobalMeV3(GlobalMe):
+    dataset_dir = 'globalmev3-reid'
+
+    def __init__(self, root='', market1501_500k=False, **kwargs):
+        super(GlobalMeV3, self).__init__(root, market1501_500k, **kwargs)
+
+
+class GlobalMeV4(GlobalMe):
+    dataset_dir = 'globalmev4-reid'
+
+    def __init__(self, root='', market1501_500k=False, **kwargs):
+        super(GlobalMeV4, self).__init__(root, market1501_500k, **kwargs)
