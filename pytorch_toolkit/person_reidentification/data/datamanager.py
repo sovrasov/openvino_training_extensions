@@ -23,12 +23,15 @@ import torch
 from torchreid.data.datamanager import DataManager
 from torchreid.data.datasets import __image_datasets
 
-from .datasets.globalme import GlobalMe
+from .datasets.globalme import GlobalMe, GlobalMeV2, GlobalMeV3, GlobalMeV4
 from .transforms import build_transforms
 from .sampler import build_train_sampler
 
 
 __image_datasets['globalme'] = GlobalMe
+__image_datasets['globalmev2'] = GlobalMeV2
+__image_datasets['globalmev3'] = GlobalMeV3
+__image_datasets['globalmev4'] = GlobalMeV4
 
 
 def init_image_dataset(name, **kwargs):
