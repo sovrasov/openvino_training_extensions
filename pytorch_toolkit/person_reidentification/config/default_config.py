@@ -109,6 +109,7 @@ def get_default_config():
     cfg.loss.softmax = CN()
     cfg.loss.softmax.label_smooth = True  # Use label smoothing regularizer
     cfg.loss.softmax.conf_pen = 0.0
+    cfg.loss.softmax.pr_product = False
     cfg.loss.softmax.m = 0.35
     cfg.loss.softmax.s = 30
     cfg.loss.triplet = CN()

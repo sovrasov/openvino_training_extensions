@@ -48,7 +48,7 @@ class ImageAMSoftmaxEngine(ImageSoftmaxEngine):
 
     def __init__(self, datamanager, model, optimizer, reg_cfg, metric_cfg, batch_transform_cfg, scheduler=None, use_gpu=False,
                  softmax_type='stock', label_smooth=True, conf_penalty=False,
-                 m=0.35, s=10, writer=None, openvino_model=None):
+                 pr_product=False, m=0.35, s=10, writer=None, openvino_model=None):
         super(ImageAMSoftmaxEngine, self).__init__(datamanager, model, optimizer, scheduler, use_gpu)
 
         self.regularizer = get_regularizer(reg_cfg)
@@ -67,7 +67,8 @@ class ImageAMSoftmaxEngine(ImageSoftmaxEngine):
                 num_classes=self.datamanager.num_train_pids,
                 use_gpu=self.use_gpu,
                 conf_penalty=conf_penalty,
-                m=m, s=s
+                m=m, s=s,
+                pr_product=pr_product
             )
 
         self.batch_transform_cfg = batch_transform_cfg
@@ -94,6 +95,10 @@ class ImageAMSoftmaxEngine(ImageSoftmaxEngine):
         if visrank and not test_only:
             raise ValueError('visrank=True is valid only if test_only=True')
 
+        if visactmap:
+            self.visactmap(testloader, save_dir, self.datamanager.width, self.datamanager.height, print_freq)
+            return
+
         if test_only:
             self.test(
                 0,
@@ -109,9 +114,7 @@ class ImageAMSoftmaxEngine(ImageSoftmaxEngine):
             )
             return
 
-        if visactmap:
-            self.visactmap(testloader, save_dir, self.datamanager.width, self.datamanager.height, print_freq)
-            return
+
 
         if self.writer is None:
             self.writer = SummaryWriter(log_dir=save_dir)
