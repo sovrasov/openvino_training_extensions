@@ -48,7 +48,7 @@ class ImageAMSoftmaxEngine(ImageSoftmaxEngine):
 
     def __init__(self, datamanager, model, optimizer, reg_cfg, metric_cfg, batch_transform_cfg, scheduler=None, use_gpu=False,
                  softmax_type='stock', label_smooth=True, conf_penalty=False,
-                 pr_product=False, m=0.35, s=10, writer=None, openvino_model=None):
+                 pr_product=False, margin='cos', m=0.35, s=10, writer=None, openvino_model=None):
         super(ImageAMSoftmaxEngine, self).__init__(datamanager, model, optimizer, scheduler, use_gpu)
 
         self.regularizer = get_regularizer(reg_cfg)
@@ -68,7 +68,8 @@ class ImageAMSoftmaxEngine(ImageSoftmaxEngine):
                 use_gpu=self.use_gpu,
                 conf_penalty=conf_penalty,
                 m=m, s=s,
-                pr_product=pr_product
+                pr_product=pr_product,
+                margin_type=margin
             )
 
         self.batch_transform_cfg = batch_transform_cfg

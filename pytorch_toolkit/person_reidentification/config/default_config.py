@@ -112,6 +112,7 @@ def get_default_config():
     cfg.loss.softmax.pr_product = False
     cfg.loss.softmax.m = 0.35
     cfg.loss.softmax.s = 30
+    cfg.loss.softmax.margin_type = 'cos'
     cfg.loss.triplet = CN()
     cfg.loss.triplet.margin = 0.3  # Distance margin
     cfg.loss.triplet.weight_t = 1.0  # Weight to balance hard triplet loss
