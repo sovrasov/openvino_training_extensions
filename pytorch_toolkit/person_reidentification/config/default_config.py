@@ -26,7 +26,11 @@ def get_default_config():
     cfg.model.pretrained = True  # Automatically load pretrained model weights if available
     cfg.model.load_weights = ''  # Path to model weights
     cfg.model.resume = ''  # Path to checkpoint for resume training
-    cfg.model.dropout_prob = 0.0
+    cfg.model.dropout = CN()
+    cfg.model.dropout.p = 0.0
+    cfg.model.dropout.mu = 0.1
+    cfg.model.dropout.sigma = 0.03
+    cfg.model.dropout.dist = 'gaussian'
     cfg.model.feature_dim = 512
     cfg.model.fpn = True
     cfg.model.fpn_dim = 256

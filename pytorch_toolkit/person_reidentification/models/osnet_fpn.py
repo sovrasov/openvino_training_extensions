@@ -29,11 +29,14 @@ import logging as log
 
 import torch
 from torch import nn
+from torch.nn import functional as F
 
-from torchreid.models.osnet import OSNet, OSBlock, ConvLayer, pretrained_urls
+from torchreid.models.osnet import OSNet, ConvLayer, LightConv3x3, Conv1x1Linear, \
+                                   ChannelGate, Conv1x1, pretrained_urls
 from torchreid.models.senet import SEModule
 
 from .modules.fpn import FPN
+from .modules.dropout import Dropout
 
 
 __all__ = ['fpn_osnet_x1_0', 'fpn_osnet_x0_75', 'fpn_osnet_x0_5', 'fpn_osnet_x0_25', 'fpn_osnet_ibn_x1_0']
@@ -153,6 +156,61 @@ class GeneralizedMeanPoolingP(GeneralizedMeanPooling):
         self.p = nn.Parameter(torch.ones(1) * norm)
 
 
+class OSBlock(nn.Module):
+    """Omni-scale feature learning block."""
+
+    def __init__(self, in_channels, out_channels, IN=False, bottleneck_reduction=4,
+                 dropout_cfg=None, **kwargs):
+        super(OSBlock, self).__init__()
+        mid_channels = out_channels // bottleneck_reduction
+        self.conv1 = Conv1x1(in_channels, mid_channels)
+        self.conv2a = LightConv3x3(mid_channels, mid_channels)
+        self.conv2b = nn.Sequential(
+            LightConv3x3(mid_channels, mid_channels),
+            LightConv3x3(mid_channels, mid_channels),
+        )
+        self.conv2c = nn.Sequential(
+            LightConv3x3(mid_channels, mid_channels),
+            LightConv3x3(mid_channels, mid_channels),
+            LightConv3x3(mid_channels, mid_channels),
+        )
+        self.conv2d = nn.Sequential(
+            LightConv3x3(mid_channels, mid_channels),
+            LightConv3x3(mid_channels, mid_channels),
+            LightConv3x3(mid_channels, mid_channels),
+            LightConv3x3(mid_channels, mid_channels),
+        )
+        self.gate = ChannelGate(mid_channels)
+        self.conv3 = Conv1x1Linear(mid_channels, out_channels)
+        self.downsample = None
+        if in_channels != out_channels:
+            self.downsample = Conv1x1Linear(in_channels, out_channels)
+        self.IN = None
+        if IN:
+            self.IN = nn.InstanceNorm2d(out_channels, affine=True)
+        self.dropout = None
+        if dropout_cfg is not None:
+            self.dropout = Dropout(**dropout_cfg)
+
+    def forward(self, x):
+        identity = x
+        x1 = self.conv1(x)
+        x2a = self.conv2a(x1)
+        x2b = self.conv2b(x1)
+        x2c = self.conv2c(x1)
+        x2d = self.conv2d(x1)
+        x2 = self.gate(x2a) + self.gate(x2b) + self.gate(x2c) + self.gate(x2d)
+        x3 = self.conv3(x2)
+        if self.downsample is not None:
+            identity = self.downsample(identity)
+        if self.dropout:
+            x3 = self.dropout(x3)
+        out = x3 + identity
+        if self.IN is not None:
+            out = self.IN(out)
+        return F.relu(out)
+
+
 class OSNetFPN(OSNet):
     """Omni-Scale Network.
 
@@ -165,14 +223,16 @@ class OSNetFPN(OSNet):
                  loss='softmax',
                  instance_norm=False,
                  attention=False,
-                 dropout_prob=0,
+                 dropout_cfg=None,
                  fpn=True,
                  fpn_dim=256,
                  pooling_type='avg',
                  input_size=(256, 128),
                  IN_first=False,
                  **kwargs):
+        self.dropout_cfg = dropout_cfg
         super(OSNetFPN, self).__init__(num_classes, blocks, layers, channels, feature_dim, loss, instance_norm)
+
         self.feature_scales = (4, 8, 16, 16)
         self.fpn_dim = fpn_dim
         self.feature_dim = feature_dim
@@ -202,9 +262,9 @@ class OSNetFPN(OSNet):
         self.fpn = FPN(channels, self.feature_scales, fpn_dim, fpn_dim) if fpn else None
 
         if fpn:
-            self.fc = self._construct_fc_layer(feature_dim, fpn_dim, dropout_p=dropout_prob)
+            self.fc = self._construct_fc_layer(feature_dim, fpn_dim, None)
         else:
-            self.fc = self._construct_fc_layer(feature_dim, channels[3], dropout_p=None)
+            self.fc = self._construct_fc_layer(feature_dim, channels[3], None)
 
         if self.loss not in ['am_softmax', ]:
             self.classifier = nn.Linear(self.feature_dim, num_classes)
@@ -213,6 +273,23 @@ class OSNetFPN(OSNet):
             self.classifier = AngleSimpleLinear(self.feature_dim, num_classes)
 
         self._init_params()
+
+    def _make_layer(self, block, layer, in_channels, out_channels, reduce_spatial_size, IN=False):
+        layers = []
+
+        layers.append(block(in_channels, out_channels, IN=IN))
+        for i in range(1, layer):
+            layers.append(block(out_channels, out_channels, IN=IN, dropout_cfg=self.dropout_cfg))
+
+        if reduce_spatial_size:
+            layers.append(
+                nn.Sequential(
+                    Conv1x1(out_channels, out_channels),
+                    nn.AvgPool2d(2, stride=2)
+                )
+            )
+
+        return nn.Sequential(*layers)
 
     def _construct_fc_layer(self, fc_dims, input_dim, dropout_p=None):
         if fc_dims is None or fc_dims<0:
@@ -396,6 +473,8 @@ def init_pretrained_weights(model, key=''):
             matched_layers.append(k)
         else:
             discarded_layers.append(k)
+            #print(model_dict[k].size(), v.size())
+
 
     model_dict.update(new_state_dict)
     model.load_state_dict(model_dict)

@@ -33,7 +33,7 @@ __model_factory['fpn_osnet_ibn_x1_0'] = fpn_osnet_ibn_x1_0
 
 
 def build_model(name, num_classes, loss='softmax', pretrained=True,
-                use_gpu=True, dropout_prob=0.0, feature_dim=512, fpn=True, fpn_dim=256,
+                use_gpu=True, dropout_cfg=0.0, feature_dim=512, fpn=True, fpn_dim=256,
                 pooling_type='avg', input_size=(256, 128), IN_first=False, attention=False):
     """A function wrapper for building a model.
     """
@@ -45,7 +45,7 @@ def build_model(name, num_classes, loss='softmax', pretrained=True,
         loss=loss,
         pretrained=pretrained,
         use_gpu=use_gpu,
-        dropout_prob=dropout_prob,
+        dropout_cfg=dropout_cfg,
         feature_dim=feature_dim,
         fpn=fpn,
         fpn_dim=fpn_dim,

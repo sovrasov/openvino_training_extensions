@@ -101,7 +101,7 @@ def main():
         loss=cfg.loss.name,
         pretrained=cfg.model.pretrained,
         use_gpu=cfg.use_gpu,
-        dropout_prob=cfg.model.dropout_prob,
+        dropout_cfg=cfg.model.dropout,
         feature_dim=cfg.model.feature_dim,
         fpn=cfg.model.fpn,
         fpn_dim=cfg.model.fpn_dim,
