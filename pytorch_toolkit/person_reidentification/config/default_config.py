@@ -30,7 +30,7 @@ def get_default_config():
     cfg.model.dropout.p = 0.0
     cfg.model.dropout.mu = 0.1
     cfg.model.dropout.sigma = 0.03
-    cfg.model.dropout.dist = 'gaussian'
+    cfg.model.dropout.dist = 'none'
     cfg.model.feature_dim = 512
     cfg.model.fpn = True
     cfg.model.fpn_dim = 256

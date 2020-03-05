@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 
 class Dropout(nn.Module):
-    DISTRIBUTIONS = ['bernoulli', 'gaussian']
+    DISTRIBUTIONS = ['bernoulli', 'gaussian', 'none']
 
     def __init__(self, p=0.5, mu=0.5, sigma=0.2, dist='bernoulli'):
         super(Dropout, self).__init__()
