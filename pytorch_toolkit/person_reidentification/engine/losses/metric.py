@@ -72,6 +72,39 @@ class GlobalPushPlus(nn.Module):
         return loss_value / num_valid
 
 
+class LocalPushLoss(nn.Module):
+    def __init__(self, margin=0.1, weight=1.0, smart_margin=True):
+        super(LocalPushLoss, self).__init__()
+
+        self.margin = margin
+        assert self.margin >= 0.0
+
+        self.weight = weight
+        assert self.weight > 0.0
+
+        self.smart_margin = smart_margin
+
+    def forward(self, normalized_embeddings, cos_theta, target):
+        similarity = normalized_embeddings.matmul(normalized_embeddings.permute(1, 0))
+
+        with torch.no_grad():
+            pairs_mask = target.view(-1, 1) != target.view(1, -1)
+
+            if self.smart_margin:
+                center_similarity = cos_theta[torch.arange(cos_theta.size(0), device=target.device), target]
+                threshold = center_similarity.clamp(min=self.margin).view(-1, 1) - self.margin
+            else:
+                threshold = self.margin
+            similarity_mask = similarity > threshold
+
+            mask = pairs_mask & similarity_mask
+
+        filtered_similarity = torch.where(mask, similarity - threshold, torch.zeros_like(similarity))
+        losses, _ = filtered_similarity.max(dim=-1)
+
+        return self.weight * losses.mean()
+
+
 class MetricLosses:
     """Class-aggregator for metric-learning losses"""
 
@@ -81,25 +114,29 @@ class MetricLosses:
         self.writer = writer
         self.total_losses_num = 0
 
-        self.center_loss = CenterLoss(classes_num, embed_size, cos_dist=True)
-        self.optimizer_centloss = torch.optim.SGD(self.center_loss.parameters(), lr=centers_lr)
+        self.local_push = LocalPushLoss()
+
         assert center_coeff >= 0
         self.center_coeff = center_coeff
+        self.loss_balancing = loss_balancing
+        assert glob_push_plus_loss_coeff >= 0
+        self.glob_push_plus_loss_coeff = glob_push_plus_loss_coeff
+        '''
+        self.center_loss = CenterLoss(classes_num, embed_size, cos_dist=True)
+        self.optimizer_centloss = torch.optim.SGD(self.center_loss.parameters(), lr=centers_lr)
         if self.center_coeff > 0:
             self.total_losses_num += 1
 
         self.glob_push_plus_loss = GlobalPushPlus()
-        assert glob_push_plus_loss_coeff >= 0
-        self.glob_push_plus_loss_coeff = glob_push_plus_loss_coeff
         if self.glob_push_plus_loss_coeff > 0:
             self.total_losses_num += 1
 
-        self.loss_balancing = loss_balancing
         if self.loss_balancing and self.total_losses_num > 1:
             self.loss_weights = nn.Parameter(torch.FloatTensor(self.total_losses_num).cuda())
             self.balancing_optimizer = torch.optim.SGD([self.loss_weights], lr=balancing_lr)
             for i in range(self.total_losses_num):
                 self.loss_weights.data[i] = 0.
+        '''
 
     def _balance_losses(self, losses):
         assert len(losses) == self.total_losses_num
@@ -108,7 +145,13 @@ class MetricLosses:
                             0.5 * self.loss_weights[i]
         return sum(losses)
 
-    def __call__(self, features, labels, epoch_num, iteration):
+    def __call__(self, features, labels, cos_theta, epoch_num, iteration):
+        loc_push_loss_val = 0
+        if self.glob_push_plus_loss_coeff > 0.:
+            loss_value = self.local_push(F.normalize(features, dim=1), cos_theta, labels)
+            self.writer.add_scalar('Loss/local_push_loss', loc_push_loss_val, iteration)
+
+        '''
         all_loss_values = []
         center_loss_val = 0
         if self.center_coeff > 0.:
@@ -135,7 +178,7 @@ class MetricLosses:
         if self.total_losses_num > 0:
             if self.writer is not None:
                 self.writer.add_scalar('Loss/AUX_losses', loss_value, iteration)
-
+        '''
         return loss_value
 
     def init_iteration(self):
