@@ -148,7 +148,7 @@ class MetricLosses:
     def __call__(self, features, labels, cos_theta, epoch_num, iteration):
         loc_push_loss_val = 0
         if self.glob_push_plus_loss_coeff > 0.:
-            loss_value = self.local_push(F.normalize(features, dim=1), cos_theta, labels)
+            loc_push_loss_val = self.local_push(F.normalize(features, dim=1), cos_theta, labels)
             self.writer.add_scalar('Loss/local_push_loss', loc_push_loss_val, iteration)
 
         '''
@@ -179,6 +179,7 @@ class MetricLosses:
             if self.writer is not None:
                 self.writer.add_scalar('Loss/AUX_losses', loss_value, iteration)
         '''
+        loss_value = self.glob_push_plus_loss_coeff * loc_push_loss_val
         return loss_value
 
     def init_iteration(self):
