@@ -229,8 +229,14 @@ class OSNetFPN(OSNet):
                  pooling_type='avg',
                  input_size=(256, 128),
                  IN_first=False,
+                 extra_blocks=False,
                  **kwargs):
         self.dropout_cfg = dropout_cfg
+        self.extra_blocks = extra_blocks
+        if self.extra_blocks:
+            layers[0] += 1
+            layers[1] += 1
+            layers[2] += 1
         super(OSNetFPN, self).__init__(num_classes, blocks, layers, channels, feature_dim, loss, instance_norm)
 
         self.feature_scales = (4, 8, 16, 16)
