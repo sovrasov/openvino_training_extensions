@@ -118,3 +118,91 @@ class GlobalMeV4(GlobalMe):
 
     def __init__(self, root='', market1501_500k=False, **kwargs):
         super(GlobalMeV4, self).__init__(root, market1501_500k, **kwargs)
+
+
+class Wildtrack(GlobalMe):
+    dataset_dir = 'wildtrack-reid'
+    dataset_subdir = 'Wildtrack'
+
+    def __init__(self, root='', market1501_500k=False, **kwargs):
+        super(Wildtrack, self).__init__(root, market1501_500k, **kwargs)
+
+
+class AMG(GlobalMe):
+    dataset_dir = 'amg-reid'
+    dataset_subdir = 'AMG'
+
+    def __init__(self, root='', market1501_500k=False, **kwargs):
+        super(AMG, self).__init__(root, market1501_500k, **kwargs)
+
+
+class ShoppertrackTestLarge(GlobalMe):
+    dataset_dir = 'shoppertrack-reid'
+    dataset_subdir = 'Shoppertrack-large'
+
+    def __init__(self, root='', market1501_500k=False, **kwargs):
+        super(ShoppertrackTestLarge, self).__init__(root, market1501_500k, **kwargs)
+
+
+class ShoppertrackTestSmall(GlobalMe):
+    dataset_dir = 'shoppertrack-reid'
+    dataset_subdir = 'Shoppertrack-small'
+
+    def __init__(self, root='', market1501_500k=False, **kwargs):
+        super(ShoppertrackTestSmall, self).__init__(root, market1501_500k, **kwargs)
+
+
+class Shoppertrack(GlobalMe):
+    dataset_dir = 'shoppertrack-train-reid'
+    dataset_subdir = 'Shoppertrack'
+
+    def __init__(self, root='', market1501_500k=False, **kwargs):
+        super(Shoppertrack, self).__init__(root, market1501_500k, **kwargs)
+
+
+class AMGFront(GlobalMe):
+    dataset_dir = 'amg-reid-front'
+    dataset_subdir = 'AMG'
+
+    def __init__(self, root='', market1501_500k=False, **kwargs):
+        super(AMGFront, self).__init__(root, market1501_500k, **kwargs)
+
+
+class AMGBack(GlobalMe):
+    dataset_dir = 'amg-reid-back'
+    dataset_subdir = 'AMG'
+
+    def __init__(self, root='', market1501_500k=False, **kwargs):
+        super(AMGBack, self).__init__(root, market1501_500k, **kwargs)
+
+
+class AMGSide(GlobalMe):
+    dataset_dir = 'amg-reid-side'
+    dataset_subdir = 'AMG'
+
+    def __init__(self, root='', market1501_500k=False, **kwargs):
+        super(AMGSide, self).__init__(root, market1501_500k, **kwargs)
+
+
+class PSVOutdoor(GlobalMe):
+    dataset_dir = 'psv-outdoor-reid'
+    dataset_subdir = 'PSV-Outdoor-reID'
+
+    def __init__(self, root='', market1501_500k=False, **kwargs):
+        super(PSVOutdoor, self).__init__(root, market1501_500k, **kwargs)
+
+
+class PSVIndoor(GlobalMe):
+    dataset_dir = 'psv-indoor-reid'
+    dataset_subdir = 'PSV-Indoor-reID'
+
+    def __init__(self, root='', market1501_500k=False, **kwargs):
+        super(PSVIndoor, self).__init__(root, market1501_500k, **kwargs)
+
+
+class MarketTrainOnly(GlobalMe):
+    dataset_dir = 'market1501'
+    dataset_subdir = 'Train-only'
+
+    def __init__(self, root='', market1501_500k=False, **kwargs):
+        super(MarketTrainOnly, self).__init__(root, market1501_500k, **kwargs)

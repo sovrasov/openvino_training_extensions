@@ -1,6 +1,4 @@
 """
- MIT License
-
  Copyright (c) 2018 Kaiyang Zhou
 
  Copyright (c) 2019 Intel Corporation
@@ -23,7 +21,9 @@ import torch
 from torchreid.data.datamanager import DataManager
 from torchreid.data.datasets import __image_datasets
 
-from .datasets.globalme import GlobalMe, GlobalMeV2, GlobalMeV3, GlobalMeV4
+from .datasets.chandler import Chandler
+from .datasets.globalme import *
+#from .datasets.wildtrack import Wildtrack
 from .transforms import build_transforms
 from .sampler import build_train_sampler
 
@@ -32,6 +32,18 @@ __image_datasets['globalme'] = GlobalMe
 __image_datasets['globalmev2'] = GlobalMeV2
 __image_datasets['globalmev3'] = GlobalMeV3
 __image_datasets['globalmev4'] = GlobalMeV4
+__image_datasets['chandler'] = Chandler
+__image_datasets['wildtrack'] = Wildtrack
+__image_datasets['amg'] = AMG
+__image_datasets['shoppertrack'] = Shoppertrack
+__image_datasets['shoppertrack-test-large'] = ShoppertrackTestLarge
+__image_datasets['shoppertrack-test-small'] = ShoppertrackTestSmall
+__image_datasets['amg-front'] = AMGFront
+__image_datasets['amg-back'] = AMGBack
+__image_datasets['amg-side'] = AMGSide
+__image_datasets['psv-outdoor'] = PSVOutdoor
+__image_datasets['psv-indoor'] = PSVIndoor
+__image_datasets['market-train'] = MarketTrainOnly
 
 
 def init_image_dataset(name, **kwargs):
