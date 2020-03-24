@@ -51,7 +51,9 @@ class LCTGate(nn.Module):
         super(LCTGate, self).__init__()
         assert channels > 0
         assert groups > 0
-        self.gn = nn.GroupNorm(groups, channels)
+        self.gn = nn.GroupNorm(groups, channels, affine=True)
+        nn.init.ones_(self.gn.bias)
+        nn.init.zeros_(self.gn.weight)
         self.global_avgpool = nn.AdaptiveAvgPool2d(1)
         self.gate_activation = nn.Sigmoid()
 
