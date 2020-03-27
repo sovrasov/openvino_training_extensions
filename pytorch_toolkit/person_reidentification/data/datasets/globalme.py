@@ -23,7 +23,7 @@ import glob
 import re
 import warnings
 
-from torchreid.data.datasets import ImageDataset
+from ..dataset import ImageDataset
 
 
 class GlobalMe(ImageDataset):

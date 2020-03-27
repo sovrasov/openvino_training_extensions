@@ -23,11 +23,16 @@ from torchreid.data.datasets import __image_datasets
 
 from .datasets.chandler import Chandler
 from .datasets.globalme import *
+from .datasets.market1501 import Market1501
+from .datasets.dukemtmcreid import DukeMTMCreID
+from .datasets.msmt17 import MSMT17
 #from .datasets.wildtrack import Wildtrack
 from .transforms import build_transforms
 from .sampler import build_train_sampler
 
-
+__image_datasets['msmt17'] = MSMT17
+__image_datasets['market1501'] = Market1501
+__image_datasets['dukemtmcreid'] = DukeMTMCreID
 __image_datasets['globalme'] = GlobalMe
 __image_datasets['globalmev2'] = GlobalMeV2
 __image_datasets['globalmev3'] = GlobalMeV3
