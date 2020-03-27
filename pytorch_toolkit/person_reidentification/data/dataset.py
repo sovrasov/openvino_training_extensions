@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import division
 
+import operator
 import os.path as osp
 import numpy as np
 import tarfile
@@ -31,7 +32,7 @@ class Dataset(object):
     _junk_pids = [] # contains useless person IDs, e.g. background, false detections
 
     def __init__(self, train, query, gallery, transform=None, mode='train',
-                 combineall=False, verbose=True, **kwargs):
+                 combineall=False, verbose=True, min_id_samples=0, **kwargs):
         self.train = train
         self.query = query
         self.gallery = gallery
@@ -46,6 +47,8 @@ class Dataset(object):
         if self.combineall:
             self.combine_all()
 
+        self._cut_train_ids(min_id_samples)
+
         if self.mode == 'train':
             self.data = self.train
         elif self.mode == 'query':
@@ -58,6 +61,37 @@ class Dataset(object):
 
         if self.verbose:
             self.show_summary()
+
+    def _cut_train_ids(self, min_imgs=10):
+        if min_imgs < 2:
+            return
+        print(len(self.train), self.num_train_pids)
+
+        self.train = sorted(self.train, key=operator.itemgetter(1))
+        id_counters = {}
+        for path, pid, cam in self.train:
+            if pid in id_counters:
+                id_counters[pid] += 1
+            else:
+                id_counters[pid] = 1
+        pids_to_del = set()
+        for k in id_counters:
+            if id_counters[k] < min_imgs:
+                pids_to_del.add(k)
+
+        filtered_train = []
+        removed_pids = set()
+        for path, pid, cam in self.train:
+            if pid in pids_to_del:
+                removed_pids.add(pid)
+            else:
+                filtered_train.append((path, pid - len(removed_pids), cam))
+        self.train = filtered_train
+
+        self.num_train_pids = self.get_num_pids(self.train)
+        self.num_train_cams = self.get_num_cams(self.train)
+
+        print(len(self.train), self.num_train_pids)
 
     def __getitem__(self, index):
         raise NotImplementedError

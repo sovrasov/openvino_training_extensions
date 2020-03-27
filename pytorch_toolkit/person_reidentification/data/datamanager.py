@@ -66,8 +66,8 @@ class ImageDataManagerWithTransforms(DataManager):
     def __init__(self, root='', sources=None, targets=None, height=256, width=128, transforms='random_flip',
                  norm_mean=None, norm_std=None, use_gpu=True, split_id=0, combineall=False,
                  batch_size_train=32, batch_size_test=32, workers=4, num_instances=4, train_sampler='',
-                 cuhk03_labeled=False, cuhk03_classic_split=False, market1501_500k=False, apply_masks_to_test=False):
-
+                 cuhk03_labeled=False, cuhk03_classic_split=False, market1501_500k=False, apply_masks_to_test=False,
+                 min_id_samples=0):
         super(ImageDataManagerWithTransforms, self).__init__(
             sources=sources, targets=targets, height=height, width=width,
             transforms=None, norm_mean=norm_mean, norm_std=norm_std, use_gpu=use_gpu
@@ -91,7 +91,8 @@ class ImageDataManagerWithTransforms(DataManager):
                 split_id=split_id,
                 cuhk03_labeled=cuhk03_labeled,
                 cuhk03_classic_split=cuhk03_classic_split,
-                market1501_500k=market1501_500k
+                market1501_500k=market1501_500k,
+                min_id_samples=min_id_samples
             )
             trainset.append(trainset_)
         trainset = sum(trainset)
