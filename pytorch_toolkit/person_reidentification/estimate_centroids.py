@@ -40,6 +40,7 @@ def main():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--config-file', type=str, default='', help='path to config file')
     parser.add_argument('--ids-file', type=str, default='ids_to_remove.json')
+    parser.add_argument('--cut-ids-percent', type=int, default=3)
     parser.add_argument('opts', default=None, nargs=argparse.REMAINDER,
                         help='Modify config options using the command-line')
     args = parser.parse_args()
@@ -86,8 +87,8 @@ def main():
     for j, item in enumerate(tqdm(loader)):
         embeddings = F.normalize(model(item[0]), dim=1)
         # 0 - images 1 - labels 2 - cams 3 - paths
-        start_index = j*item[1].shape[0]
-        end_index = min((j+1)*item[1].shape[0], nrof_images)
+        start_index = j * cfg.train.batch_size
+        end_index = min((j + 1) * cfg.train.batch_size, nrof_images)
         batch_embeddings = embeddings.data.cpu().numpy()
         assert emb_array[start_index:end_index, :].shape == batch_embeddings.shape
         emb_array[start_index:end_index, :] = batch_embeddings
@@ -106,13 +107,13 @@ def main():
 
     weak_criterion = sort_dict(weak_criterion)
     strong_criterion = sort_dict(strong_criterion)
-    cut_len = int(0.05 * len(weak_criterion)) + 1
+    cut_len = int(args.cut_ids_percent / 100 * len(weak_criterion)) + 1
     weak_ids_cut = list(weak_criterion.keys())[0:cut_len]
     strong_ids_cut = list(strong_criterion.keys())[0:cut_len]
     print(strong_ids_cut)
     print(weak_ids_cut)
-    print(set(weak_ids_cut).intersection(set(strong_ids_cut)))
     verified_set = set(weak_ids_cut).intersection(set(strong_ids_cut))
+    print(sorted(verified_set))
 
     removed_count = 0
     removed_names = []
