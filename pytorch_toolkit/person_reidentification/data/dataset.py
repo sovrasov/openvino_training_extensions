@@ -3,6 +3,7 @@ from __future__ import print_function
 from __future__ import division
 
 import operator
+import json
 import os.path as osp
 import numpy as np
 import tarfile
@@ -32,7 +33,7 @@ class Dataset(object):
     _junk_pids = [] # contains useless person IDs, e.g. background, false detections
 
     def __init__(self, train, query, gallery, transform=None, mode='train',
-                 combineall=False, verbose=True, min_id_samples=0, **kwargs):
+                 combineall=False, verbose=True, min_id_samples=0, ignore_list_path='', **kwargs):
         self.train = train
         self.query = query
         self.gallery = gallery
@@ -40,6 +41,7 @@ class Dataset(object):
         self.mode = mode
         self.combineall = combineall
         self.verbose = verbose
+        self.ignore_list_path = ignore_list_path
 
         self.num_train_pids = self.get_num_pids(self.train)
         self.num_train_cams = self.get_num_cams(self.train)
@@ -63,11 +65,18 @@ class Dataset(object):
             self.show_summary()
 
     def _cut_train_ids(self, min_imgs=10):
-        if min_imgs < 2:
+        if min_imgs < 2 and len(self.ignore_list_path) == 0:
             return
         print(len(self.train), self.num_train_pids)
 
         self.train = sorted(self.train, key=operator.itemgetter(1))
+
+        if len(self.ignore_list_path):
+            with open(self.ignore_list_path) as json_file:
+                ignore_list = json.load(json_file)
+        else:
+            ignore_list = []
+
         id_counters = {}
         for path, pid, cam in self.train:
             if pid in id_counters:
@@ -82,10 +91,16 @@ class Dataset(object):
         filtered_train = []
         removed_pids = set()
         for path, pid, cam in self.train:
+            # check also for removed paths
             if pid in pids_to_del:
                 removed_pids.add(pid)
-            else:
+            elif not (osp.split(path)[1] in ignore_list):
                 filtered_train.append((path, pid - len(removed_pids), cam))
+            else:
+                print(path)
+                pids_to_del.add(pid)
+                removed_pids.add(pid)
+
         self.train = filtered_train
 
         self.num_train_pids = self.get_num_pids(self.train)

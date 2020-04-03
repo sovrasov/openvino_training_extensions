@@ -59,6 +59,7 @@ def get_default_config():
     cfg.data.norm_std = [0.229, 0.224, 0.225]  # Default is imagenet std
     cfg.data.save_dir = 'log'  # Path to save log
     cfg.data.min_id_samples = 1
+    cfg.data.ignore_list_path = ''
 
     # specific datasets
     cfg.market1501 = CN()
@@ -265,7 +266,8 @@ def imagedata_kwargs(cfg):
         'cuhk03_classic_split': cfg.cuhk03.classic_split,
         'market1501_500k': cfg.market1501.use_500k_distractors,
         'apply_masks_to_test': cfg.test.apply_masks,
-        'min_id_samples': cfg.data.min_id_samples
+        'min_id_samples': cfg.data.min_id_samples,
+        'ignore_list_path': cfg.data.ignore_list_path
     }
 
 
