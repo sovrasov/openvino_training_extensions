@@ -90,6 +90,8 @@ def main():
         start_index = j * cfg.train.batch_size
         end_index = min((j + 1) * cfg.train.batch_size, nrof_images)
         batch_embeddings = embeddings.data.cpu().numpy()
+        if emb_array[start_index:end_index, :].shape != batch_embeddings.shape:
+            print(emb_array[start_index:end_index, :].shape, batch_embeddings.shape)
         assert emb_array[start_index:end_index, :].shape == batch_embeddings.shape
         emb_array[start_index:end_index, :] = batch_embeddings
         pids_array[start_index:end_index] = item[1].data.cpu().numpy()
