@@ -97,6 +97,7 @@ class ImageDataManagerWithTransforms(DataManager):
             trainset.append(trainset_)
         trainset = sum(trainset)
         self.trainset = trainset
+        self.num_sources = len(self.sources)
 
         self._num_train_pids = trainset.num_train_pids
         self._num_train_cams = trainset.num_train_cams

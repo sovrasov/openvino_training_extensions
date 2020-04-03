@@ -81,7 +81,7 @@ def main():
     datamanager = ImageDataManagerWithTransforms(**imagedata_kwargs(cfg))
     centroids = {}
     loader = datamanager.trainloader
-    nrof_images = len(datamanager.trainset)
+    nrof_images = len(datamanager.trainset) - datamanager.num_sources
     emb_array = np.zeros((nrof_images, cfg.model.feature_dim), dtype=np.float32)
     pids_array = np.zeros(nrof_images, dtype=np.int32)
     for j, item in enumerate(tqdm(loader)):
@@ -90,8 +90,6 @@ def main():
         start_index = j * cfg.train.batch_size
         end_index = min((j + 1) * cfg.train.batch_size, nrof_images)
         batch_embeddings = embeddings.data.cpu().numpy()
-        if emb_array[start_index:end_index, :].shape != batch_embeddings.shape:
-            print(emb_array[start_index:end_index, :].shape, batch_embeddings.shape)
         assert emb_array[start_index:end_index, :].shape == batch_embeddings.shape
         emb_array[start_index:end_index, :] = batch_embeddings
         pids_array[start_index:end_index] = item[1].data.cpu().numpy()
