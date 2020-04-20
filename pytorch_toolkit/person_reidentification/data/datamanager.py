@@ -26,6 +26,7 @@ from .datasets.globalme import *
 from .datasets.market1501 import Market1501
 from .datasets.dukemtmcreid import DukeMTMCreID
 from .datasets.msmt17 import MSMT17
+from .datasets.internal import *
 #from .datasets.wildtrack import Wildtrack
 from .transforms import build_transforms
 from .sampler import build_train_sampler
@@ -49,6 +50,17 @@ __image_datasets['amg-side'] = AMGSide
 __image_datasets['psv-outdoor'] = PSVOutdoor
 __image_datasets['psv-indoor'] = PSVIndoor
 __image_datasets['market-train'] = MarketTrainOnly
+
+__image_datasets['int-airport'] = InternalAirport
+__image_datasets['int-camera-tampering'] = InternalCameraTampering
+__image_datasets['int-globalme'] = InternalGlobalMe
+__image_datasets['int-mall'] = InternalMall
+__image_datasets['int-psv-indoor'] = InternalPSVIndoor
+__image_datasets['int-psv-outdoor'] = InternalPSVOutdoor
+__image_datasets['int-ss-platform'] = InternalSSPlatform
+__image_datasets['int-ss-street'] = InternalSSStreet
+__image_datasets['int-ss-ticket'] = InternalSSTicket
+__image_datasets['int-wildtrack'] = InternalWildtrack
 
 
 def init_image_dataset(name, **kwargs):
