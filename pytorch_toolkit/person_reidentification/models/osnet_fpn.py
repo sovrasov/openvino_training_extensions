@@ -51,14 +51,13 @@ class LCTGate(nn.Module):
         super(LCTGate, self).__init__()
         assert channels > 0
         assert groups > 0
+        while channels % groups != 0:
+            groups //= 2
         self.gn = nn.GroupNorm(groups, channels, affine=True)
         nn.init.ones_(self.gn.bias)
         nn.init.zeros_(self.gn.weight)
         self.global_avgpool = nn.AdaptiveAvgPool2d(1)
         self.gate_activation = nn.Sigmoid()
-
-    def make_divisible(x, divisible_by=8):
-        return int(np.ceil(x * 1. / divisible_by) * divisible_by)
 
     def forward(self, x):
         input = x
