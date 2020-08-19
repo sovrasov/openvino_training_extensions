@@ -108,11 +108,12 @@ def parse_args():
     parser.add_argument('output_annotation', help="Path to output json file")
     parser.add_argument('--with_landmarks', action='store_true',
                         help="Whether to read landmarks")
+    parser.add_argument('--keep_percent', default=100, type=int)
 
     return parser.parse_args()
 
 
-def convert_wider_annotation(ann_file, data_dir, out_file, with_landmarks):
+def convert_wider_annotation(ann_file, data_dir, out_file, with_landmarks, keep_percent=100):
     """ Converts wider annotation to COCO format. """
 
     img_id = 0
@@ -129,7 +130,11 @@ def convert_wider_annotation(ann_file, data_dir, out_file, with_landmarks):
     else:
         boxes, landmarks = parse_wider_gt(ann_file)
 
-    for filename in tqdm(boxes.keys()):
+    processed_images = sorted(boxes.keys())
+    cut_border = int(len(processed_images) * keep_percent / 100.)
+    processed_images = processed_images[0 : cut_border]
+
+    for filename in tqdm(processed_images):
         image_info = {}
         image_info['id'] = img_id
         img_id += 1
@@ -166,7 +171,8 @@ def main():
 
     args = parse_args()
     convert_wider_annotation(args.input_annotation, args.images_dir,
-                             args.output_annotation, args.with_landmarks)
+                             args.output_annotation, args.with_landmarks,
+                             args.keep_percent)
 
 
 if __name__ == '__main__':
