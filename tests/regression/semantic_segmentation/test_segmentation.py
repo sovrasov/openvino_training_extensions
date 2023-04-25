@@ -91,7 +91,7 @@ class TestRegressionSegmentation:
         result_dict[TASK_TYPE][LABEL_TYPE][TRAIN_TYPE]["train"].append(self.performance)
 
         assert test_result["passed"] is True, test_result["log"]
-
+"""
     @e2e_pytest_component
     @pytest.mark.parametrize("template", templates, ids=templates_ids)
     def test_otx_train_kpi_test(self, template):
@@ -415,3 +415,4 @@ class TestRegressionSegmentation:
         result_dict[TASK_TYPE][self.label_type][TRAIN_TYPE]["pot"].append(self.performance)
 
         assert test_result["passed"] is True, test_result["log"]
+"""

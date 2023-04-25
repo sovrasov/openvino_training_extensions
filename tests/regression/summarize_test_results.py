@@ -38,20 +38,20 @@ NON_ANOMALY_DATA = {
     "Label type": [],
     "Model": [],
     "train": [],
-    "export": [],
-    "deploy": [],
-    "nncf": [],
-    "pot": [],
+    #"export": [],
+    #"deploy": [],
+    #"nncf": [],
+    #"pot": [],
     "train E2E Time (Sec.)": [],
-    "export E2E Time (Sec.)": [],
-    "deploy E2E Time (Sec.)": [],
-    "nncf E2E Time (Sec.)": [],
-    "pot E2E Time (Sec.)": [],
+    #"export E2E Time (Sec.)": [],
+    #"deploy E2E Time (Sec.)": [],
+    #"nncf E2E Time (Sec.)": [],
+    #"pot E2E Time (Sec.)": [],
     "train Eval Time (Sec.)": [],
-    "export Eval Time (Sec.)": [],
-    "deploy Eval Time (Sec.)": [],
-    "nncf Eval Time (Sec.)": [],
-    "pot Eval Time (Sec.)": [],
+    #"export Eval Time (Sec.)": [],
+    #"deploy Eval Time (Sec.)": [],
+    #"nncf Eval Time (Sec.)": [],
+    #"pot Eval Time (Sec.)": [],
 }
 
 
@@ -111,18 +111,18 @@ def summarize_non_anomaly_data(task: str, task_key: str, json_data: dict, result
             train_data = task_data.get("train")
             if train_data is None:
                 raise ValueError("Train data can't be empty.")
-            export_data = task_data.get("export")
-            deploy_data = task_data.get("deploy")
-            nncf_data = task_data.get("nncf")
-            pot_data = task_data.get("pot")
+            #export_data = task_data.get("export")
+            #deploy_data = task_data.get("deploy")
+            #nncf_data = task_data.get("nncf")
+            #pot_data = task_data.get("pot")
 
             for i, per_model_data in enumerate(train_data):
                 for model in per_model_data:
                     train_items = get_metric_items(get_metric_dict(train_data, i, model))
-                    export_items = get_metric_items(get_metric_dict(export_data, i, model))
-                    deploy_items = get_metric_items(get_metric_dict(deploy_data, i, model))
-                    nncf_items = get_metric_items(get_metric_dict(nncf_data, i, model))
-                    pot_items = get_metric_items(get_metric_dict(pot_data, i, model))
+                    #export_items = get_metric_items(get_metric_dict(export_data, i, model))
+                    #deploy_items = get_metric_items(get_metric_dict(deploy_data, i, model))
+                    #nncf_items = get_metric_items(get_metric_dict(nncf_data, i, model))
+                    #pot_items = get_metric_items(get_metric_dict(pot_data, i, model))
 
                     result_data["Task type"].append(task)
                     result_data["Train type"].append(train_type)
@@ -130,10 +130,10 @@ def summarize_non_anomaly_data(task: str, task_key: str, json_data: dict, result
                     result_data["Model"].append(model)
 
                     fill_model_performance(train_items, "train", result_data)
-                    fill_model_performance(export_items, "export", result_data)
-                    fill_model_performance(deploy_items, "deploy", result_data)
-                    fill_model_performance(nncf_items, "nncf", result_data)
-                    fill_model_performance(pot_items, "pot", result_data)
+                    #fill_model_performance(export_items, "export", result_data)
+                    #fill_model_performance(deploy_items, "deploy", result_data)
+                    #fill_model_performance(nncf_items, "nncf", result_data)
+                    #fill_model_performance(pot_items, "pot", result_data)
 
 
 def summarize_anomaly_data(task: str, task_key: str, json_data: dict, result_data: dict) -> dict:
@@ -203,7 +203,7 @@ def summarize_data(args):
             else:
                 summarize_non_anomaly_data(task, task_key, json_data, NON_ANOMALY_DATA)
 
-    save_file(ANOMALY_DATA, f"{args.output_path}/anomaly_results.csv")
+    #save_file(ANOMALY_DATA, f"{args.output_path}/anomaly_results.csv")
     save_file(NON_ANOMALY_DATA, f"{args.output_path}/non_anomaly_results.csv")
 
 

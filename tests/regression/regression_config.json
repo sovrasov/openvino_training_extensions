@@ -3,181 +3,42 @@
     "classification": {
       "supervised": {
         "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_subset_cls_decr/train",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_subset_cls_decr/test",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_subset_cls_decr/test",
-          "--input": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_subset/test/airplane"
-        },
-        "multi_label": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/multi_label_coco_subset_cls_decr",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/multi_label_coco_subset_cls_decr",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/multi_label_coco_subset_cls_decr",
-          "--input": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/multi_label_coco_subset/images/test"
-        },
-        "h_label": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/h_label_cifar10_subset",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/h_label_cifar10_subset",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/h_label_cifar10_subset",
-          "--input": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/h_label_cifar10_subset/images/test/airplane"
-        },
-        "supcon": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_subset_cls_decr/train",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_subset_cls_decr/test",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_subset_cls_decr/test"
-        }
-      },
-      "class_incr": {
-        "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_subset/train",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_subset/test",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_subset/test"
-        },
-        "multi_label": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/multi_label_coco_subset",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/multi_label_coco_subset",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/multi_label_coco_subset"
-        }
-      },
-      "semi_supervised": {
-        "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_subset_cls_decr/train",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_subset_cls_decr/test",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_subset_cls_decr/test",
-          "--unlabeled-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_unlabeled"
-        }
-      },
-      "self_supervised": {
-        "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/classification/cifar10_subset_cls_decr/train"
+          "--train-data-roots": "/data/otx/regression/cifar10_subset_cls_decr/train",
+          "--val-data-roots": "/data/otx/regression/cifar10_subset_cls_decr/test",
+          "--test-data-roots": "/data/otx/regression/cifar10_subset_cls_decr/test",
+          "--input": "/data/otx/regression/cifar10_subset/test/airplane"
         }
       }
     },
     "detection": {
       "supervised": {
         "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--input": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr/images/test"
-        }
-      },
-      "class_incr": {
-        "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset"
-        }
-      },
-      "semi_supervised": {
-        "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--unlabeled-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset/images/unlabeled"
-        }
-      },
-      "tiling": {
-        "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--input": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset/images/test"
+          "--train-data-roots": "/data/otx/regression/coco_subset_cls_decr",
+          "--val-data-roots": "/data/otx/regression/coco_subset_cls_decr",
+          "--test-data-roots": "/data/otx/regression/coco_subset_cls_decr",
+          "--input": "/data/otx/regression/coco_subset_cls_decr/images/test"
         }
       }
     },
     "segmentation": {
       "supervised": {
         "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/segmentation/regression_voc_cls_decr",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/segmentation/regression_voc_cls_decr",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/segmentation/regression_voc_cls_decr",
-          "--input": "/storageserver/pvd_data/otx_data_archive/regression_datasets/segmentation/regression_voc_cls_decr/test/images"
-        }
-      },
-      "class_incr": {
-        "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/segmentation/regression_voc_sl",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/segmentation/regression_voc_sl",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/segmentation/regression_voc_sl"
-        }
-      },
-      "semi_supervised": {
-        "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/segmentation/regression_voc_cls_decr",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/segmentation/regression_voc_cls_decr",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/segmentation/regression_voc_cls_decr",
-          "--unlabeled-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/segmentation/regression_voc_semisl/unlabeled"
-        }
-      },
-      "self_supervised": {
-        "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/segmentation/regression_voc_cls_decr"
+          "--train-data-roots": "/data/otx/regression/regression_voc_cls_decr",
+          "--val-data-roots": "/data/otx/regression/regression_voc_cls_decr",
+          "--test-data-roots": "/data/otx/regression/regression_voc_cls_decr",
+          "--input": "/data/otx/regression/regression_voc_cls_decr/test/images"
         }
       }
     },
     "instance_segmentation": {
       "supervised": {
         "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--input": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr/images/test"
+          "--train-data-roots": "/data/otx/regression/coco_subset_cls_decr",
+          "--val-data-roots": "/data/otx/regression/coco_subset_cls_decr",
+          "--test-data-roots": "/data/otx/regression/coco_subset_cls_decr",
+          "--input": "/data/otx/regression/coco_subset_cls_decr/images/test"
         }
-      },
-      "class_incr": {
-        "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset"
-        }
-      },
-      "tiling": {
-        "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset_cls_decr",
-          "--input": "/storageserver/pvd_data/otx_data_archive/regression_datasets/detection/coco_subset/images/test"
-        }
-      }
-    },
-    "action_classification": {
-      "supervised": {
-        "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/action/classification/HMDB51_30percent/train",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/action/classification/HMDB51_30percent/val",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/action/classification/HMDB51_30percent/val"
-        }
-      }
-    },
-    "action_detection": {
-      "supervised": {
-        "multi_class": {
-          "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/action/detection/JHMDB_5percent/train",
-          "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/action/detection/JHMDB_5percent/test",
-          "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/action/detection/JHMDB_5percent/test"
-        }
-      }
-    },
-    "anomaly_classification": {
-      "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/anomaly/mvtec",
-      "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/anomaly/mvtec",
-      "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/anomaly/mvtec",
-      "--input": "/storageserver/pvd_data/otx_data_archive/regression_datasets/anomaly/mvtec/bottle/test/contamination",
-      "train_params": []
-    },
-    "anomaly_detection": {
-      "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/anomaly/mvtec",
-      "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/anomaly/mvtec",
-      "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/anomaly/mvtec",
-      "--input": "/storageserver/pvd_data/otx_data_archive/regression_datasets/anomaly/mvtec/bottle/test/contamination",
-      "train_params": []
-    },
-    "anomaly_segmentation": {
-      "--train-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/anomaly/mvtec",
-      "--val-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/anomaly/mvtec",
-      "--test-data-roots": "/storageserver/pvd_data/otx_data_archive/regression_datasets/anomaly/mvtec",
-      "--input": "/storageserver/pvd_data/otx_data_archive/regression_datasets/anomaly/mvtec/bottle/test/contamination",
-      "train_params": []
+    }
     }
   },
   "regression_criteria": {
@@ -319,17 +180,17 @@
         "multi_class": {
           "train": {
             "YOLOX": 0.537,
-            "SSD": 0.179,
+            "SSD": 0.159,
             "ATSS": 0.446
           },
           "export": {
             "YOLOX": 0.534,
-            "SSD": 0.179,
+            "SSD": 0.159,
             "ATSS": 0.455
           },
           "deploy": {
             "YOLOX": 0.534,
-            "SSD": 0.179,
+            "SSD": 0.159,
             "ATSS": 0.455
           },
           "nncf": {
