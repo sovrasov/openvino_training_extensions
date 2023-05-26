@@ -396,8 +396,6 @@ class MMDetectionTask(OTXDetectionTask):
             saliency_hook: Union[nullcontext, BaseRecordingForwardHook] = nullcontext()
         else:
             raw_model = feature_model
-            if raw_model.__class__.__name__ == "NNCFNetwork":
-                raw_model = raw_model.get_nncf_wrapped_model()
             if isinstance(raw_model, TwoStageDetector):
                 saliency_hook = ActivationMapHook(feature_model)
             else:
