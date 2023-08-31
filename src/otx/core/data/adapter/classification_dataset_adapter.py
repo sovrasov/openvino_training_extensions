@@ -22,6 +22,12 @@ from otx.api.entities.shapes.rectangle import Rectangle
 from otx.api.entities.subset import Subset
 from otx.core.data.adapter.base_dataset_adapter import BaseDatasetAdapter
 
+import numpy as np
+import cv2
+
+from otx.api.utils.ocv_video_decoder import _VideoDecoderOpenCV
+otx_debug = True
+VIDEO_PATH = '/home/vsovraso/data/Trailcam footage of a Pine Marten and wild Fallow Deer.mp4'
 
 class ClassificationDatasetAdapter(BaseDatasetAdapter):
     """Classification adapter inherited from BaseDatasetAdapter.
@@ -35,8 +41,28 @@ class ClassificationDatasetAdapter(BaseDatasetAdapter):
         dataset_items: List[DatasetItemEntityWithID] = []
         for subset, subset_data in self.dataset.items():
             for _, datumaro_items in subset_data.subsets().items():
-                for datumaro_item in datumaro_items:
-                    image = self.datum_media_2_otx_media(datumaro_item.media)
+                for i, datumaro_item in enumerate(datumaro_items):
+                    if not otx_debug:
+                        image = self.datum_media_2_otx_media(datumaro_item.media)
+                    else:
+                        path = getattr(datumaro_item.media, "path", None)
+                        frame_idx = int(path.split("_")[-1].split(".")[0])
+                        size = datumaro_item.media._size  # pylint: disable=protected-access
+                        #print(f"video frame loading {frame_idx}", size)
+                        def getter():
+                            return _VideoDecoderOpenCV().decode(VIDEO_PATH, frame_index=frame_idx)
+
+                        #frame = getter()
+                        #print(frame.shape)
+                        #cv2.imwrite(f"./tmp_nncf/frame_{frame_idx}.jpg", frame)
+
+                        #image_from_file = self.datum_media_2_otx_media(datumaro_item.media)
+                        #print(image_from_file.numpy.shape)
+                        #cv2.imwrite(f"./tmp_nncf/frame_{frame_idx}_file.jpg", np.abs(frame - image_from_file.numpy))
+                        #print(np.linalg.norm(frame - image_from_file.numpy))
+                        #exit(0)
+
+                        image = Image(data=getter, size=size)
                     assert isinstance(image, Image)
                     if not fake_ann:
                         datumaro_labels = []
@@ -46,6 +72,8 @@ class ClassificationDatasetAdapter(BaseDatasetAdapter):
                     else:
                         datumaro_labels = [0]  # fake label
 
+                    if not datumaro_labels:
+                        continue
                     shapes = self._get_cls_shapes(datumaro_labels)
                     dataset_item = DatasetItemEntityWithID(
                         image, self._get_ann_scene_entity(shapes), subset=subset, id_=datumaro_item.id

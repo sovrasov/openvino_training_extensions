@@ -90,7 +90,9 @@ class Image(IMedia2DEntity):
         Returns:
             np.ndarray: NumPy representation of the image.
         """
+        #print(self.__file_path)
         if self.__data is None:
+            #path = "/home/vsovraso/code/training_extensions/tests/assets/car_tree_bug/images/train/Slide4.PNG"
             return cv2.cvtColor(cv2.imread(self.__file_path), cv2.COLOR_BGR2RGB)
         if callable(self.__data):
             return self.__data()
