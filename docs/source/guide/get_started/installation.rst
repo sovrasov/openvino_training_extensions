@@ -88,12 +88,12 @@ cloning the repository and setting up the environment
 2. Install Intel® Extension
 for PyTorch (IPEX):
 
-Please, refer to `official documentation <https://intel.github.io/intel-extension-for-pytorch/index.html#installation?platform=gpu&version=v2.1.10%2Bxpu>`_
-to ensure that necessary prerequisites are done.
+Please, refer to `official documentation <https://intel.github.io/intel-extension-for-pytorch/index.html#installation?platform=gpu&version=v2.1.20%2bxpu>`_
+to ensure that necessary prerequisites are done (like installation of an appropriate GPU driver and OneAPI package).
 
 .. code-block::
 
-    python -m pip install torch==2.1.0a0 torchvision==0.16.0a0 torchaudio==2.1.0a0 intel-extension-for-pytorch==2.1.10+xpu --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
+    python -m pip install torch==2.1.0.post0 torchvision==0.16.0.post0 torchaudio==2.1.0.post0 intel-extension-for-pytorch==2.1.20+xpu oneccl_bind_pt==2.1.200+xpu --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
 
 3. Install mmcv and apply a custom patch
 to make it compatible with XPU devices:
